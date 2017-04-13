@@ -29,14 +29,25 @@
 			<h1 class="entry-title" itemprop="headline">Arch on Odroid-C1</h1>
 			<span class="entry-meta"><time itemprop="datePublished" datetime="2017-04-13">April 13, 2017</time></span>
 			<section itemprop="entry-text">
-				<p>So, in order to install Archlinux on the Odroid-C1, make sure you have an existing Ubuntu-machine running. If you do not have, download the Ubuntu image on your Mac or Windows, then write an SD-card that you can use on the Odroid in order to have an Ubuntu-environment to set up the Archlinux onto the EMMC or another SD-card. Phew.</p>
+				
 
-<pre><code>http://de.eu.odroid.in/ubuntu_14.04lts/ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
+<p>So, in order to install Archlinux on the Odroid-C1, make sure you have an existing Ubuntu-machine running. If you do not have, download the Ubuntu image on your Mac or Windows, then write an SD-card that you can use on the Odroid in order to have an Ubuntu-environment to set up the Archlinux onto the EMMC or another SD-card. Phew.</p>
+
+<h2 id="on-your-mac-os-x">On your Mac OS X</h2>
+
+<pre><code>wget http://de.eu.odroid.in/ubuntu_14.04lts/ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
 # Remember to verify the md5!
 unxz ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
 </code></pre>
 
-<p>Now, boot up the Archlinux EMMC on your Odroid-C1:</p>
+<h2 id="on-your-odroid-c1-running-lubuntu">On your Odroid-C1 running Lubuntu</h2>
+
+<p>Follow the official guide on getting Archlinux.
+<a href="https://archlinuxarm.org/platforms/armv7/amlogic/odroid-c1">https://archlinuxarm.org/platforms/armv7/amlogic/odroid-c1</a></p>
+
+<p>Now, boot up the Archlinux EMMC on your Odroid-C1.</p>
+
+<h2 id="on-your-odroid-c1-running-archlinux">On your Odroid-C1 running Archlinux</h2>
 
 <pre><code>alarm alarm
 su #login with root
