@@ -24,9 +24,19 @@
 &lt;pre&gt;&lt;code&gt;wget http://de.eu.odroid.in/ubuntu_14.04lts/ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
 # Remember to verify the md5!
 unxz ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
+
+# Check the ID for your SD card, replace # with ID number
+df -h
+
+sudo diskutil unmountDisk /dev/disk#
+sudo dd bs=1m if=ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img of=/dev/rdisk#
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;p&gt;Now, place your SD card containing Lubuntu into your Odroid-C1, and boot it up.&lt;/p&gt;
+
 &lt;h2 id=&#34;on-your-odroid-c1-running-lubuntu&#34;&gt;On your Odroid-C1 running Lubuntu&lt;/h2&gt;
+
+&lt;p&gt;Default user/pass is odroid/odroid&lt;/p&gt;
 
 &lt;p&gt;Follow the official guide on getting Archlinux.
 &lt;a href=&#34;https://archlinuxarm.org/platforms/armv7/amlogic/odroid-c1&#34;&gt;https://archlinuxarm.org/platforms/armv7/amlogic/odroid-c1&lt;/a&gt;&lt;/p&gt;
@@ -34,6 +44,8 @@ unxz ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
 &lt;p&gt;Now, boot up the Archlinux EMMC on your Odroid-C1.&lt;/p&gt;
 
 &lt;h2 id=&#34;on-your-odroid-c1-running-archlinux&#34;&gt;On your Odroid-C1 running Archlinux&lt;/h2&gt;
+
+&lt;p&gt;Default user/pass is alarm/alarm, and root-password is root&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;alarm alarm
 su #login with root
