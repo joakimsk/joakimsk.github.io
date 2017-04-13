@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/css/skeleton.css">
 <link rel="stylesheet" href="/css/custom.css">
 <link rel="alternate" href="/index.xml" type="application/rss+xml" title="The world according to Joakim">
-<title>Posts - The world according to Joakim</title>
+<title>Arch on Odroid-C1 - The world according to Joakim</title>
 </head>
 <body>
 
@@ -25,18 +25,28 @@
 
 
 	<main role="main">
-		<h1 class="list-title">Posts</h1>
-
-		<article itemscope itemtype="http://schema.org/Blog">
-			<h2 class="entry-title" itemprop="headline"><a href="/post/arch-odroid-c1/">Arch on Odroid-C1</a></h2>
+		<article itemscope itemtype="http://schema.org/BlogPosting">
+			<h1 class="entry-title" itemprop="headline">Arch on Odroid-C1</h1>
 			<span class="entry-meta"><time itemprop="datePublished" datetime="2017-04-13">April 13, 2017</time></span>
-		</article>
+			<section itemprop="entry-text">
+				<p>So, in order to install Archlinux on the Odroid-C1, make sure you have an existing Ubuntu-machine running. If you do not have, download the Ubuntu image on your Mac or Windows, then write an SD-card that you can use on the Odroid in order to have an Ubuntu-environment to set up the Archlinux onto the EMMC or another SD-card. Phew.</p>
 
-		<article itemscope itemtype="http://schema.org/Blog">
-			<h2 class="entry-title" itemprop="headline"><a href="/post/birth-of-a-blog/">birth of a blog</a></h2>
-			<span class="entry-meta"><time itemprop="datePublished" datetime="2017-04-09">April 09, 2017</time></span>
-		</article>
+<pre><code>http://de.eu.odroid.in/ubuntu_14.04lts/ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
+# Remember to verify the md5!
+unxz ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
+</code></pre>
 
+<p>Now, boot up the Archlinux EMMC on your Odroid-C1:</p>
+
+<pre><code>alarm alarm
+su #login with root
+pacman -Syu
+pacman -S iperf3
+pacman -S git
+</code></pre>
+
+			</section>
+		</article>
 	</main>
 
 

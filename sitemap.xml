@@ -2,19 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.joakimsk.com/post/arch-odroid-c1/</loc>
+    <lastmod>2017-04-13T19:30:05+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.joakimsk.com/post/birth-of-a-blog/</loc>
     <lastmod>2017-04-09T20:04:52+02:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.joakimsk.com/post/</loc>
-    <lastmod>2017-04-09T20:04:52+02:00</lastmod>
+    <lastmod>2017-04-13T19:30:05+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.joakimsk.com/</loc>
-    <lastmod>2017-04-09T20:04:52+02:00</lastmod>
+    <lastmod>2017-04-13T19:30:05+02:00</lastmod>
     <priority>0</priority>
   </url>
   

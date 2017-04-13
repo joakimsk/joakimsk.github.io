@@ -6,8 +6,32 @@
     <description>Recent content in Posts on The world according to Joakim</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 Apr 2017 20:04:52 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 13 Apr 2017 19:30:05 +0200</lastBuildDate>
     <atom:link href="http://www.joakimsk.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Arch on Odroid-C1</title>
+      <link>http://www.joakimsk.com/post/arch-odroid-c1/</link>
+      <pubDate>Thu, 13 Apr 2017 19:30:05 +0200</pubDate>
+      
+      <guid>http://www.joakimsk.com/post/arch-odroid-c1/</guid>
+      <description>&lt;p&gt;So, in order to install Archlinux on the Odroid-C1, make sure you have an existing Ubuntu-machine running. If you do not have, download the Ubuntu image on your Mac or Windows, then write an SD-card that you can use on the Odroid in order to have an Ubuntu-environment to set up the Archlinux onto the EMMC or another SD-card. Phew.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;http://de.eu.odroid.in/ubuntu_14.04lts/ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
+# Remember to verify the md5!
+unxz ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img.xz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, boot up the Archlinux EMMC on your Odroid-C1:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;alarm alarm
+su #login with root
+pacman -Syu
+pacman -S iperf3
+pacman -S git
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>birth of a blog</title>
