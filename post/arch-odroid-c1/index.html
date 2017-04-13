@@ -59,10 +59,11 @@ sudo dd bs=1m if=ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img of=/dev/rdisk#
 
 <h2 id="on-your-odroid-c1-running-archlinux">On your Odroid-C1 running Archlinux</h2>
 
+<p>By default, the HDMI output should be enabled, and drop you to a command-line interface.</p>
+
 <p>Default user/pass is alarm/alarm, and root-password is root</p>
 
-<pre><code>alarm alarm
-su #login with root
+<pre><code>su #elevate privileges to root user
 pacman -Syu
 pacman -S iperf3
 pacman -S git
