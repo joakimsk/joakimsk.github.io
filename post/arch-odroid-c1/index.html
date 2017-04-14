@@ -98,6 +98,26 @@ SUBSYSTEM==&quot;gpio&quot;, KERNEL==&quot;gpio*&quot;, ACTION==&quot;add&quot;,
 
 <p>Reboot odroid to reload rules</p>
 
+<p>It is also possible to use the sysfs interface and fiddle for testing purposes. It is adviced to avoid using this for applications.
+<a href="https://www.kernel.org/doc/Documentation/gpio/sysfs.txt">https://www.kernel.org/doc/Documentation/gpio/sysfs.txt</a></p>
+
+<pre><code>GPIO=101 # Select GPIO #101 (GPIOX.BIT4 or wiringPi#21), this is on pin #29 on Odroid-C1
+echo $GPIO &gt; /sys/class/gpio/export
+echo &quot;out&quot; &gt; /sys/class/gpio/gpio$GPIO/direction
+echo 1 &gt; /sys/class/gpio/gpio$GPIO/value
+</code></pre>
+
+<p>To watch gpio events, a nice guy made a nice small program in C.
+<a href="https://github.com/larsks/gpio-watch">https://github.com/larsks/gpio-watch</a></p>
+
+<pre><code>git clone https://github.com/larsks/gpio-watch.git
+make
+mkdir gpio-scripts
+touch gpio-scripts/102
+# Set up script in 102 and chmod +x
+./gpio-watch -s gpio-scripts -e switch 102 # 102 is left LCD 16x2 button
+</code></pre>
+
 			</section>
 		</article>
 	</main>
