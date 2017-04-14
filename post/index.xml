@@ -92,7 +92,36 @@ sudo dd bs=1m if=ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img of=/dev/rdisk#
 pacman -Syu
 pacman -S iperf3
 pacman -S git
+pacman -S sudo
+pacman -S gcc
+pacman -S wget
+pacman -S python3
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Setting up the LCD 16x2 using the HD44780 controller. Examples show using the wiringPi made by Gordon at &lt;a href=&#34;http://wiringpi.com/&#34;&gt;http://wiringpi.com/&lt;/a&gt; however the version maintained by Gordon is unable to detect the Odroid hardware. Thus, they have a fork of an old version hosted at &lt;a href=&#34;https://github.com/hardkernel/wiringPi&#34;&gt;https://github.com/hardkernel/wiringPi&lt;/a&gt; which Hardkernel has modified to fit the Odroid.&lt;/p&gt;
+
+&lt;p&gt;To avoid running gpio using root, create a new group that can access gpio.
+We have to identify the device used in sysfs, which is in this case (236, 0) named meson-gpiomem.
+udev is used to make rules.&lt;/p&gt;
+
+&lt;h1 id=&#34;as-root&#34;&gt;As root:&lt;/h1&gt;
+
+&lt;p&gt;groupadd -f -r gpio
+usermod -G gpio alarm&lt;/p&gt;
+
+&lt;p&gt;cd /etc/udev/rules.d/
+touch 99-gpio.rules&lt;/p&gt;
+
+&lt;p&gt;Add content to 99-gpio.rules based on information from running:
+udevadm info /dev/gpiomem # Outputs information about the virtual device
+devadm info &amp;ndash;attribute-walk &amp;ndash;path=/sys/class/gpio/ # Outputs information about the class gpio&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SUBSYSTEM==&amp;quot;meson-gpiomem&amp;quot;, KERNEL==&amp;quot;gpiomem&amp;quot;, GROUP=&amp;quot;gpio&amp;quot;, MODE=&amp;quot;0660&amp;quot;
+SUBSYSTEM==&amp;quot;gpio&amp;quot;, KERNEL==&amp;quot;gpiochip*&amp;quot;, ACTION==&amp;quot;add&amp;quot;, PROGRAM=&amp;quot;/bin/sh -c &#39;chown root:gpio /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport&#39;&amp;quot;
+SUBSYSTEM==&amp;quot;gpio&amp;quot;, KERNEL==&amp;quot;gpio*&amp;quot;, ACTION==&amp;quot;add&amp;quot;, PROGRAM=&amp;quot;/bin/sh -c &#39;chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value&#39;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Reboot odroid to reload rules&lt;/p&gt;
 </description>
     </item>
     

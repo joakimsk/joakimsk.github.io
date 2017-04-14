@@ -67,7 +67,36 @@ sudo dd bs=1m if=ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img of=/dev/rdisk#
 pacman -Syu
 pacman -S iperf3
 pacman -S git
+pacman -S sudo
+pacman -S gcc
+pacman -S wget
+pacman -S python3
 </code></pre>
+
+<p>Setting up the LCD 16x2 using the HD44780 controller. Examples show using the wiringPi made by Gordon at <a href="http://wiringpi.com/">http://wiringpi.com/</a> however the version maintained by Gordon is unable to detect the Odroid hardware. Thus, they have a fork of an old version hosted at <a href="https://github.com/hardkernel/wiringPi">https://github.com/hardkernel/wiringPi</a> which Hardkernel has modified to fit the Odroid.</p>
+
+<p>To avoid running gpio using root, create a new group that can access gpio.
+We have to identify the device used in sysfs, which is in this case (236, 0) named meson-gpiomem.
+udev is used to make rules.</p>
+
+<h1 id="as-root">As root:</h1>
+
+<p>groupadd -f -r gpio
+usermod -G gpio alarm</p>
+
+<p>cd /etc/udev/rules.d/
+touch 99-gpio.rules</p>
+
+<p>Add content to 99-gpio.rules based on information from running:
+udevadm info /dev/gpiomem # Outputs information about the virtual device
+devadm info &ndash;attribute-walk &ndash;path=/sys/class/gpio/ # Outputs information about the class gpio</p>
+
+<pre><code>SUBSYSTEM==&quot;meson-gpiomem&quot;, KERNEL==&quot;gpiomem&quot;, GROUP=&quot;gpio&quot;, MODE=&quot;0660&quot;
+SUBSYSTEM==&quot;gpio&quot;, KERNEL==&quot;gpiochip*&quot;, ACTION==&quot;add&quot;, PROGRAM=&quot;/bin/sh -c 'chown root:gpio /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'&quot;
+SUBSYSTEM==&quot;gpio&quot;, KERNEL==&quot;gpio*&quot;, ACTION==&quot;add&quot;, PROGRAM=&quot;/bin/sh -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'&quot;
+</code></pre>
+
+<p>Reboot odroid to reload rules</p>
 
 			</section>
 		</article>
