@@ -86,17 +86,31 @@ sudo dd bs=1m if=ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img of=/dev/rdisk#
 
 &lt;p&gt;By default, the HDMI output should be enabled, and drop you to a command-line interface.&lt;/p&gt;
 
-&lt;p&gt;Default user/pass is alarm/alarm, and root-password is root&lt;/p&gt;
+&lt;p&gt;Default user/pass is alarm/alarm, and root-password is root.&lt;/p&gt;
+
+&lt;p&gt;Some packages I installed, for my usecase:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;su #elevate privileges to root user
 pacman -Syu
 pacman -S iperf3
 pacman -S git
-pacman -S sudo
+pacman -S sudo # remember to visudo and add %wheel
 pacman -S gcc
 pacman -S wget
 pacman -S python3
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice how the hardware command line cursor is nowhere to be seen. This can be hacked back in place.
+&lt;a href=&#34;https://archlinuxarm.org/forum/viewtopic.php?f=63&amp;amp;t=8389&amp;amp;sid=a6ad39e390afa9e9d1a5533fe9e080eb&amp;amp;start=10&#34;&gt;https://archlinuxarm.org/forum/viewtopic.php?f=63&amp;amp;t=8389&amp;amp;sid=a6ad39e390afa9e9d1a5533fe9e080eb&amp;amp;start=10&lt;/a&gt;
+From your home directory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#infocmp &amp;gt;&amp;gt; ~/terminfo.txt
+#sed -i.bak -e &#39;s/?0c/?112c/g&#39; -e &#39;s/?8c/?48;0;64c/g&#39; terminfo.txt
+#tic terminfo.txt
+#tput cnorm
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Must run tput cnorm later on after a reboot, I think, so put it somewhere smart.&lt;/p&gt;
 
 &lt;p&gt;Setting up the LCD 16x2 using the HD44780 controller. Examples show using the wiringPi made by Gordon at &lt;a href=&#34;http://wiringpi.com/&#34;&gt;http://wiringpi.com/&lt;/a&gt; however the version maintained by Gordon is unable to detect the Odroid hardware. Thus, they have a fork of an old version hosted at &lt;a href=&#34;https://github.com/hardkernel/wiringPi&#34;&gt;https://github.com/hardkernel/wiringPi&lt;/a&gt; which Hardkernel has modified to fit the Odroid.&lt;/p&gt;
 
@@ -116,6 +130,8 @@ touch 99-gpio.rules&lt;/p&gt;
 udevadm info /dev/gpiomem # Outputs information about the virtual device
 devadm info &amp;ndash;attribute-walk &amp;ndash;path=/sys/class/gpio/ # Outputs information about the class gpio&lt;/p&gt;
 
+&lt;p&gt;More useful info can be found at &lt;a href=&#34;http://derekmolloy.ie/writing-a-linux-kernel-module-part-2-a-character-device/&#34;&gt;http://derekmolloy.ie/writing-a-linux-kernel-module-part-2-a-character-device/&lt;/a&gt;&lt;/p&gt;
+
 &lt;pre&gt;&lt;code&gt;SUBSYSTEM==&amp;quot;meson-gpiomem&amp;quot;, KERNEL==&amp;quot;gpiomem&amp;quot;, GROUP=&amp;quot;gpio&amp;quot;, MODE=&amp;quot;0660&amp;quot;
 SUBSYSTEM==&amp;quot;gpio&amp;quot;, KERNEL==&amp;quot;gpiochip*&amp;quot;, ACTION==&amp;quot;add&amp;quot;, PROGRAM=&amp;quot;/bin/sh -c &#39;chown root:gpio /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport&#39;&amp;quot;
 SUBSYSTEM==&amp;quot;gpio&amp;quot;, KERNEL==&amp;quot;gpio*&amp;quot;, ACTION==&amp;quot;add&amp;quot;, PROGRAM=&amp;quot;/bin/sh -c &#39;chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value&#39;&amp;quot;
@@ -123,8 +139,10 @@ SUBSYSTEM==&amp;quot;gpio&amp;quot;, KERNEL==&amp;quot;gpio*&amp;quot;, ACTION==
 
 &lt;p&gt;Reboot odroid to reload rules&lt;/p&gt;
 
-&lt;p&gt;It is also possible to use the sysfs interface and fiddle for testing purposes. It is adviced to avoid using this for applications.
+&lt;p&gt;It is also possible to use the sysfs interface and fiddle for testing purposes. It is adviced to avoid using this for applications if there are existing kernel drivers available.
 &lt;a href=&#34;https://www.kernel.org/doc/Documentation/gpio/sysfs.txt&#34;&gt;https://www.kernel.org/doc/Documentation/gpio/sysfs.txt&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To learn more about kernel modules, see here &lt;a href=&#34;http://derekmolloy.ie/writing-a-linux-kernel-module-part-1-introduction/&#34;&gt;http://derekmolloy.ie/writing-a-linux-kernel-module-part-1-introduction/&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;GPIO=101 # Select GPIO #101 (GPIOX.BIT4 or wiringPi#21), this is on pin #29 on Odroid-C1
 echo $GPIO &amp;gt; /sys/class/gpio/export
@@ -132,16 +150,20 @@ echo &amp;quot;out&amp;quot; &amp;gt; /sys/class/gpio/gpio$GPIO/direction
 echo 1 &amp;gt; /sys/class/gpio/gpio$GPIO/value
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;To watch gpio events, a nice guy made a nice small program in C.
+&lt;p&gt;To watch gpio events, a nice guy made a nice small program in C. When an interrupt is observed, the program executes a script. Can be detached. Nifty. But it does rely on sysfs. Oh well.
 &lt;a href=&#34;https://github.com/larsks/gpio-watch&#34;&gt;https://github.com/larsks/gpio-watch&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;git clone https://github.com/larsks/gpio-watch.git
+cd gpio-watch
 make
 mkdir gpio-scripts
 touch gpio-scripts/102
 # Set up script in 102 and chmod +x
 ./gpio-watch -s gpio-scripts -e switch 102 # 102 is left LCD 16x2 button
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As an alternative, one could maybe make a kernel module, following this series
+&lt;a href=&#34;http://derekmolloy.ie/kernel-gpio-programming-buttons-and-leds/&#34;&gt;http://derekmolloy.ie/kernel-gpio-programming-buttons-and-leds/&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

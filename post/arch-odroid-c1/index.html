@@ -61,17 +61,31 @@ sudo dd bs=1m if=ubuntu-14.04.3lts-lubuntu-odroid-c1-20151020.img of=/dev/rdisk#
 
 <p>By default, the HDMI output should be enabled, and drop you to a command-line interface.</p>
 
-<p>Default user/pass is alarm/alarm, and root-password is root</p>
+<p>Default user/pass is alarm/alarm, and root-password is root.</p>
+
+<p>Some packages I installed, for my usecase:</p>
 
 <pre><code>su #elevate privileges to root user
 pacman -Syu
 pacman -S iperf3
 pacman -S git
-pacman -S sudo
+pacman -S sudo # remember to visudo and add %wheel
 pacman -S gcc
 pacman -S wget
 pacman -S python3
 </code></pre>
+
+<p>Notice how the hardware command line cursor is nowhere to be seen. This can be hacked back in place.
+<a href="https://archlinuxarm.org/forum/viewtopic.php?f=63&amp;t=8389&amp;sid=a6ad39e390afa9e9d1a5533fe9e080eb&amp;start=10">https://archlinuxarm.org/forum/viewtopic.php?f=63&amp;t=8389&amp;sid=a6ad39e390afa9e9d1a5533fe9e080eb&amp;start=10</a>
+From your home directory:</p>
+
+<pre><code>#infocmp &gt;&gt; ~/terminfo.txt
+#sed -i.bak -e 's/?0c/?112c/g' -e 's/?8c/?48;0;64c/g' terminfo.txt
+#tic terminfo.txt
+#tput cnorm
+</code></pre>
+
+<p>Must run tput cnorm later on after a reboot, I think, so put it somewhere smart.</p>
 
 <p>Setting up the LCD 16x2 using the HD44780 controller. Examples show using the wiringPi made by Gordon at <a href="http://wiringpi.com/">http://wiringpi.com/</a> however the version maintained by Gordon is unable to detect the Odroid hardware. Thus, they have a fork of an old version hosted at <a href="https://github.com/hardkernel/wiringPi">https://github.com/hardkernel/wiringPi</a> which Hardkernel has modified to fit the Odroid.</p>
 
@@ -91,6 +105,8 @@ touch 99-gpio.rules</p>
 udevadm info /dev/gpiomem # Outputs information about the virtual device
 devadm info &ndash;attribute-walk &ndash;path=/sys/class/gpio/ # Outputs information about the class gpio</p>
 
+<p>More useful info can be found at <a href="http://derekmolloy.ie/writing-a-linux-kernel-module-part-2-a-character-device/">http://derekmolloy.ie/writing-a-linux-kernel-module-part-2-a-character-device/</a></p>
+
 <pre><code>SUBSYSTEM==&quot;meson-gpiomem&quot;, KERNEL==&quot;gpiomem&quot;, GROUP=&quot;gpio&quot;, MODE=&quot;0660&quot;
 SUBSYSTEM==&quot;gpio&quot;, KERNEL==&quot;gpiochip*&quot;, ACTION==&quot;add&quot;, PROGRAM=&quot;/bin/sh -c 'chown root:gpio /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'&quot;
 SUBSYSTEM==&quot;gpio&quot;, KERNEL==&quot;gpio*&quot;, ACTION==&quot;add&quot;, PROGRAM=&quot;/bin/sh -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'&quot;
@@ -98,8 +114,10 @@ SUBSYSTEM==&quot;gpio&quot;, KERNEL==&quot;gpio*&quot;, ACTION==&quot;add&quot;,
 
 <p>Reboot odroid to reload rules</p>
 
-<p>It is also possible to use the sysfs interface and fiddle for testing purposes. It is adviced to avoid using this for applications.
+<p>It is also possible to use the sysfs interface and fiddle for testing purposes. It is adviced to avoid using this for applications if there are existing kernel drivers available.
 <a href="https://www.kernel.org/doc/Documentation/gpio/sysfs.txt">https://www.kernel.org/doc/Documentation/gpio/sysfs.txt</a></p>
+
+<p>To learn more about kernel modules, see here <a href="http://derekmolloy.ie/writing-a-linux-kernel-module-part-1-introduction/">http://derekmolloy.ie/writing-a-linux-kernel-module-part-1-introduction/</a></p>
 
 <pre><code>GPIO=101 # Select GPIO #101 (GPIOX.BIT4 or wiringPi#21), this is on pin #29 on Odroid-C1
 echo $GPIO &gt; /sys/class/gpio/export
@@ -107,16 +125,20 @@ echo &quot;out&quot; &gt; /sys/class/gpio/gpio$GPIO/direction
 echo 1 &gt; /sys/class/gpio/gpio$GPIO/value
 </code></pre>
 
-<p>To watch gpio events, a nice guy made a nice small program in C.
+<p>To watch gpio events, a nice guy made a nice small program in C. When an interrupt is observed, the program executes a script. Can be detached. Nifty. But it does rely on sysfs. Oh well.
 <a href="https://github.com/larsks/gpio-watch">https://github.com/larsks/gpio-watch</a></p>
 
 <pre><code>git clone https://github.com/larsks/gpio-watch.git
+cd gpio-watch
 make
 mkdir gpio-scripts
 touch gpio-scripts/102
 # Set up script in 102 and chmod +x
 ./gpio-watch -s gpio-scripts -e switch 102 # 102 is left LCD 16x2 button
 </code></pre>
+
+<p>As an alternative, one could maybe make a kernel module, following this series
+<a href="http://derekmolloy.ie/kernel-gpio-programming-buttons-and-leds/">http://derekmolloy.ie/kernel-gpio-programming-buttons-and-leds/</a></p>
 
 			</section>
 		</article>
