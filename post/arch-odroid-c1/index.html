@@ -31,6 +31,8 @@
 			<section itemprop="entry-text">
 				
 
+<h1 id="note-to-future-self">Note to future self</h1>
+
 <p>So, in order to install Archlinux on the Odroid-C1, make sure you have an existing Ubuntu-machine running. If you do not have, download the Ubuntu image on your Mac or Windows, then write an SD-card that you can use on the Odroid in order to have an Ubuntu-environment to set up the Archlinux onto the EMMC or another SD-card. Phew.</p>
 
 <h2 id="on-your-mac-os-x">On your Mac OS X</h2>
@@ -73,6 +75,10 @@ pacman -S sudo # remember to visudo and add %wheel
 pacman -S gcc
 pacman -S wget
 pacman -S python3
+pacman -S gawk
+pacman -S vim
+pacman -S python-numpy
+pacman -S python-requests
 </code></pre>
 
 <p>Notice how the hardware command line cursor is nowhere to be seen. This can be hacked back in place.
@@ -139,6 +145,9 @@ touch gpio-scripts/102
 
 <p>As an alternative, one could maybe make a kernel module, following this series
 <a href="http://derekmolloy.ie/kernel-gpio-programming-buttons-and-leds/">http://derekmolloy.ie/kernel-gpio-programming-buttons-and-leds/</a></p>
+
+<p>For the future, consider trying to build image using Yocto.
+<a href="https://github.com/Nuand/bladeRF/wiki/Creating-Linux-based-Embedded-System-Images-with-Yocto">https://github.com/Nuand/bladeRF/wiki/Creating-Linux-based-Embedded-System-Images-with-Yocto</a></p>
 
 			</section>
 		</article>
